@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Electricity Bill Downloader</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <i class="fas fa-bolt"></i>
+          Electricity Bill Downloader
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6">
+            <div class="form-card">
+              <h2 class="card-title">
+                <i class="fas fa-file-download me-2"></i>
+                Download Your Electricity Bill
+              </h2>
+
+              <form id="billForm" method="POST">
+                <div class="mb-3">
+                  <div class="input-group">
+                    <span
+                      class="input-group-text bg-dark text-white border-end-0"
+                    >
+                      <i class="fas fa-user"></i>
+                    </span>
+                    <input
+                      type="number"
+                      name="ref_number"
+                      required
+                      placeholder="Enter 7-digit Customer ID"
+                      class="form-control text-center"
+                      min="1000000"
+                      max="9999999"
+                    />
+                  </div>
+                  <div
+                    class="form-text text-center mt-1 border-light"
+                    style="color: rgba(255, 255, 255, 0.5)"
+                  >
+                    Enter your 7-digit customer identification number
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-custom w-100">
+                  <i class="fas fa-download me-2"></i>
+                  Download Bill
+                </button>
+              </form>
+
+              <!-- Loader -->
+              <div id="loader" class="text-center">
+                <div class="spinner-border" role="status"></div>
+                <p class="loader-text">Fetching your bill, please wait...</p>
+                <p class="text-muted mt-2">This may take a few moments</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+          <h3 class="section-title">Why Use Our Service</h3>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <h4 class="feature-title">Secure & Reliable</h4>
+              <p class="feature-description">
+                Your data is protected with bank-level security. We never store
+                your personal information.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-bolt"></i>
+              </div>
+              <h4 class="feature-title">Instant Access</h4>
+              <p class="feature-description">
+                Download your bill immediately without waiting in queues or
+                visiting offices.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="fas fa-history"></i>
+              </div>
+              <h4 class="feature-title">Archive Access</h4>
+              <p class="feature-description">
+                Access up to 12 months of previous bills for your records and
+                analysis.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alertContainer" class="alert-container"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <p>
+          <i class="fas fa-copyright me-1"></i> 2025 Electricity Bill
+          Downloader. All rights reserved.
+        </p>
+        <p>
+          This service is provided for customer convenience only. For official
+          records, please contact your electricity provider.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // Form submission handler
+      document
+        .getElementById("billForm")
+        .addEventListener("submit", function (e) {
+          // Show loader
+          document.getElementById("loader").style.display = "flex";
+
+          // Simulate bill download process (in real app, this would be your actual form submission)
+          setTimeout(() => {
+            // Hide loader after 3 seconds (simulation)
+            document.getElementById("loader").style.display = "none";
+
+            // Show success notification
+            showAlert(
+              "Bill Download Successful!",
+              "Your electricity bill has been downloaded successfully.",
+              "success"
+            );
+
+            // Reset form
+            this.reset();
+          }, 30000);
+        });
+
+      // Function to show alert notification
+      function showAlert(title, message, type) {
+        const alertContainer = document.getElementById("alertContainer");
+
+        const alertEl = document.createElement("div");
+        alertEl.className = `alert alert-${type}`;
+
+        let iconClass = "fas fa-check-circle";
+        if (type === "error") iconClass = "fas fa-exclamation-circle";
+
+        alertEl.innerHTML = `
+          <i class="alert-icon ${iconClass}"></i>
+          <div class="alert-content">
+            <div class="alert-title">${title}</div>
+            <div class="alert-message">${message}</div>
+          </div>
+          <button class="close-btn" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+
+        alertContainer.appendChild(alertEl);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          alertEl.style.opacity = "0";
+          setTimeout(() => {
+            if (alertEl.parentNode) {
+              alertEl.parentNode.removeChild(alertEl);
+            }
+          }, 14000);
+        }, 14000);
+      }
+
+      // Simulate an error for demonstration
+      function simulateError() {
+        showAlert(
+          "Download Failed",
+          "Could not find bill for the provided Customer ID. Please check your ID and try again.",
+          "error"
+        );
+      }
+    </script>
+  </body>
+</html>
