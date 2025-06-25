@@ -8,13 +8,15 @@ from io import BytesIO
 import pytesseract
 import base64
 
-def current_month():
+def current_month(driver):
 
     bill_month_xpath = driver.find_element(By.XPATH, '//*[@id="page1-div"]/b/p[3]')
+    bill_owner_xpath = driver.find_element(By.XPATH, '//*[@id="page1-div"]/b/table[1]/tbody/tr[1]/td')
     bill_month = bill_month_xpath.text
-    return bill_month
+    bill_owner = bill_owner_xpath.text
+    return bill_month, bill_owner
 
-def get_fill_captcha():
+def get_fill_captcha(driver):
     """====================Captcha Reading and Filling========================"""
     
     # Step 1: Locate the CAPTCHA element
@@ -41,19 +43,22 @@ def get_fill_captcha():
 
     time.sleep(2)
 
-def print_and_save_bill():
+def print_and_save_bill(driver):
+    print("to print bill and save into directory attempt")
     # Use Chrome DevTools Protocol to print to PDF
-        result = driver.execute_cdp_cmd("Page.printToPDF", {
+    result = driver.execute_cdp_cmd("Page.printToPDF", {
             "landscape": False,
             "printBackground": True
         })
         
         
         # Save the PDF to file
-        with open(f"{customer_id}_{current_month()}_bill", "wb") as f:
-            f.write(base64.b64decode(result['data']))
-
-        print(f"Saved Print for bill of {current_month()} month")
+    bill_owner, bill_month = current_month(driver)
+    print(bill_month, bill_owner)
+    with open(f"{bill_owner}_{bill_month}_bill", "wb") as f:
+        print("in opening file")
+        f.write(base64.b64decode(result['data']))
+    print(f"Saved Print for bill of {bill_month} month")
 
 def download_bill(customer_id):
 
@@ -101,16 +106,28 @@ def download_bill(customer_id):
     time.sleep(1)
     
     # Fill captcha
-    get_fill_captcha()
+    get_fill_captcha(driver)
 
-    get_bill_url = driver.current_url
 
     """==============print to PDF only if current url is to print the bill==============="""
     
-    if get_bill_url == "https://www.lesco.gov.pk:36260/Bill.aspx":
-        print_and_save_bill()
+    # Try to fill captcha multiple times until URL ends with /Bill.aspx
+    max_attempts = 5
+    attempt = 0
+
+    while not driver.current_url.endswith("/Bill.aspx") and attempt < max_attempts:
+        print(f"Captcha attempt {attempt + 1} failed. Retrying...")
+        get_fill_captcha(driver)
+        time.sleep(2)  # Give the page time to navigate
+        attempt += 1
+
+    if driver.current_url.endswith("36260/Bill.aspx"):
+        print("Captcha successful!")
+        print_and_save_bill(driver)
     else:
-        print_and_save_bill
+        print("Captcha failed after max attempts. Exiting.")
+
+        
 
 
     driver.quit()
