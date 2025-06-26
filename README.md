@@ -26,7 +26,7 @@ A Python Flask web application that automates downloading electricity bills from
 ---
 
 ## 📂 Folder Structure
-
+```
 project-root/
 │
 ├── app.py # Flask server
@@ -38,7 +38,7 @@ project-root/
 │ │ └── style.css # Custom CSS
 │ └── output.gif # Demo GIF
 └── README.md # This file
-
+```
 
 ---
 
