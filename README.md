@@ -2,7 +2,7 @@
 
 A Python Flask web application that automates downloading electricity bills from LESCO's official site using Selenium. It handles CAPTCHA solving (OCR), extracts billing details, and generates a PDF of the bill.
 
-![Demo](static/output.gif)
+![Demo](output.gif)
 
 ---
 
