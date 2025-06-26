@@ -68,7 +68,7 @@ def download_bill(customer_id):
     chrome_options.add_argument('--no-sandbox')
     
     driver = webdriver.Chrome(options=chrome_options)
-    print("Opening Chrome")
+    # print("Opening Chrome")
     time.sleep(5)
     
     driver.maximize_window()

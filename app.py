@@ -8,10 +8,7 @@ app = Flask(__name__)
 def index():
     if request.method == 'POST':
         ref = request.form['ref_number']
-        try: 
-            download_bill(ref)
-        except:
-            return render_template('index.html')
+        download_bill(ref)
         time.sleep(1)
         print("File downloaded Sucessfully......")
         return render_template('index.html', message="File downloaded successfully.")
