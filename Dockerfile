@@ -24,12 +24,12 @@ RUN apt-get update && apt-get install -y \
     fonts-liberation \
     libappindicator3-1 \
     xdg-utils \
+    libvulkan1 \  # This is the missing dependency for Google Chrome
     && rm -rf /var/lib/apt/lists/*
 
 # Install Google Chrome (for headless mode)
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome-stable_current_amd64.deb
-RUN apt-get -fy install
+RUN dpkg -i google-chrome-stable_current_amd64.deb || apt-get install -fy
 
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
