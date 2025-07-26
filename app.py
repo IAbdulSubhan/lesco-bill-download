@@ -20,10 +20,15 @@ def notify_discord(message):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        ref = request.form['ref_number']
-        download_bill(ref)
-        time.sleep(1)
-        print("File downloaded Sucessfully......")
-        return render_template('index.html', message="File downloaded successfully.")
+    try:
+        if request.method == 'POST':
+            ref = request.form['ref_number']
+            download_bill(ref)
+            time.sleep(1)
+            print("File downloaded Sucessfully......")
+            return render_template('index.html', message="File downloaded successfully.")
+    except Exception as e:
+        notify_discord(f"Error happened: {str(e)}")
+        # return "Error occurred and reported to Discord" # to retur error on discord
+        return render_template('index.html', message="Error occurred and reported to Discord")
     return render_template('index.html')

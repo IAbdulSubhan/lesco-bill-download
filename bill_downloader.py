@@ -23,9 +23,12 @@ def current_month(driver):
         return bill_month, bill_owner
     except TimeoutException:
         print("Timeout while trying to get current month details")
+        raise
         return None, None
+    
     except Exception as e:
         print(f"Error getting current month: {str(e)}")
+        raise
         return None, None
 
 def get_fill_captcha(driver):
@@ -79,6 +82,7 @@ def get_fill_captcha(driver):
             
     except Exception as e:
         print(f"Error processing CAPTCHA: {str(e)}")
+        raise
         return False
 
 
@@ -120,9 +124,9 @@ def download_bill(customer_id):
     driver = None
     try:
         chrome_options = Options()
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--no-sandbox')
+        # chrome_options.add_argument('--headless')
+        # chrome_options.add_argument('--disable-gpu')
+        # chrome_options.add_argument('--no-sandbox')
         chrome_options.add_experimental_option("prefs", {
             "credentials_enable_service": False,
             "profile.password_manager_leak_detection": False
@@ -181,6 +185,7 @@ def download_bill(customer_id):
                     break
                 except TimeoutException:
                     print("Didn't navigate to bill page after CAPTCHA submission")
+                    raise
             attempt += 1
 
         if success:
@@ -192,16 +197,20 @@ def download_bill(customer_id):
 
     except TimeoutException:
         print("Timeout occurred while waiting for page elements")
+        raise
     except NoSuchElementException:
         print("Could not find required element on the page")
+        raise
     except WebDriverException as e:
         print(f"WebDriver error occurred: {str(e)}")
+        raise
     except Exception as e:
         print(f"Unexpected error occurred: {str(e)}")
+        raise
     finally:
         if driver:
             try:
-                driver.quit()
+                driver.close()
             except:
                 pass
 
